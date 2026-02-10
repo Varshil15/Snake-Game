@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+  <title>Snake Game Web</title>
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+  <link rel="shortcut icon" href="game.png" type="image/x-icon">
+</head>
+<body>
+  <div class="game-container">
+    <div class="header">
+      <h1>🐍 Snake Game</h1>
+    </div>
+
+    <div class="score-board">
+      <div class="score-item">
+        <div class="score-label">Score</div>
+        <div class="score-value" id="currentScore">0</div>
+      </div>
+      <div class="score-item">
+        <div class="score-label">High Score</div>
+        <div class="score-value" id="highScore">0</div>
+      </div>
+    </div>
+
+    <div class="game-board-wrapper">
+      <div id="gameBoard"></div>
+      <div class="game-over-overlay" id="gameOverOverlay">
+        <div class="game-over-title">GAME OVER</div>
+        <div class="final-score">Final Score: <span id="finalScore">0</span></div>
+        <button class="btn" id="restartBtn">Play Again</button>
+      </div>
+    </div>
+
+    <div class="controls-hint">
+      <div><span>🖱️ Desktop:</span> Use Arrow Keys</div>
+      <div><span>📱 Mobile:</span> Swipe to Control</div>
+      <div><span>🔄 Restart:</span> Space or Enter</div>
+    </div>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>
