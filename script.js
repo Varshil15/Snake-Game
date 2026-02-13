@@ -1,5 +1,27 @@
 const GRID_SIZE = 20;
-const GAME_SPEED = 180;
+const DIFFICULTY = {
+  EASY: 'easy',
+  MEDIUM: 'medium',
+  HARD: 'hard'
+};
+
+const DIFFICULTY_CONFIG = {
+  easy: {
+    baseSpeed: 230,
+    minSpeed: 120,
+    speedIncreaseStep: 6
+  },
+  medium: {
+    baseSpeed: 190,
+    minSpeed: 80,
+    speedIncreaseStep: 7
+  },
+  hard: {
+    baseSpeed: 160,
+    minSpeed: 60,
+    speedIncreaseStep: 8
+  }
+};
 const DIRECTION = {
   UP: { x: 0, y: -1 },
   DOWN: { x: 0, y: 1 },
@@ -15,6 +37,8 @@ let score = 0;
 let highScore = localStorage.getItem('snakeHighScore') || 0;
 let gameLoop = null;
 let isGameRunning = false;
+let currentDifficulty = DIFFICULTY.MEDIUM;
+let currentSpeed = DIFFICULTY_CONFIG[currentDifficulty].baseSpeed;
 
 const gameBoard = document.getElementById('gameBoard');
 const currentScoreEl = document.getElementById('currentScore');
@@ -22,6 +46,8 @@ const highScoreEl = document.getElementById('highScore');
 const finalScoreEl = document.getElementById('finalScore');
 const gameOverOverlay = document.getElementById('gameOverOverlay');
 const restartBtn = document.getElementById('restartBtn');
+const difficultyInputs = document.querySelectorAll('input[name="difficulty"]');
+const speedDisplayEl = document.getElementById('speedDisplay');
 
 highScoreEl.textContent = highScore;
 
@@ -37,12 +63,12 @@ function initGame() {
   isGameRunning = true;
   currentScoreEl.textContent = score;
   gameOverOverlay.classList.remove('show');
+  updateSpeed(true);
+  updateSpeedDisplay();
   
   spawnFood();
   renderGame();
-  
-  if (gameLoop) clearInterval(gameLoop);
-  gameLoop = setInterval(gameUpdate, GAME_SPEED);
+  startGameLoop();
 }
 
 function spawnFood() {
@@ -95,7 +121,10 @@ function gameUpdate() {
       highScoreEl.textContent = highScore;
       localStorage.setItem('snakeHighScore', highScore);
     }
-    
+    updateSpeed();
+    updateSpeedDisplay();
+    startGameLoop();
+
     spawnFood();
   } else {
     // Remove tail if no food eaten
@@ -118,9 +147,6 @@ function renderGame() {
     gameBoard.appendChild(snakeElement);
   });
 
-  // Debug: log food position and snake
-  console.log('Food:', food, 'Snake:', snake);
-
   // Render food if food is defined
   if (food && typeof food.x === 'number' && typeof food.y === 'number') {
     const foodElement = document.createElement('div');
@@ -131,6 +157,31 @@ function renderGame() {
   }
 }
 
+function startGameLoop() {
+  if (!isGameRunning) return;
+  if (gameLoop) clearInterval(gameLoop);
+  gameLoop = setInterval(gameUpdate, currentSpeed);
+}
+
+function updateSpeed(reset = false) {
+  const config = DIFFICULTY_CONFIG[currentDifficulty];
+  if (!config) return;
+
+  if (reset) {
+    currentSpeed = config.baseSpeed;
+  } else {
+    const effectiveScore = Math.max(0, score - 3); // start speeding up after score 3
+    const target = config.baseSpeed - effectiveScore * config.speedIncreaseStep;
+    currentSpeed = Math.max(target, config.minSpeed);
+  }
+}
+
+function updateSpeedDisplay() {
+  if (!speedDisplayEl) return;
+  const movesPerSecond = 1000 / currentSpeed;
+  speedDisplayEl.textContent = movesPerSecond.toFixed(1) + ' moves/s';
+}
+
 function gameOver() {
   isGameRunning = false;
   clearInterval(gameLoop);
@@ -138,6 +189,18 @@ function gameOver() {
   gameOverOverlay.classList.add('show');
   renderGame(); // Ensure fruit is hidden after death
 }
+
+difficultyInputs.forEach(input => {
+  input.addEventListener('change', () => {
+    if (!input.checked) return;
+    currentDifficulty = input.value;
+    updateSpeed(true);
+    updateSpeedDisplay();
+    if (isGameRunning) {
+      startGameLoop();
+    }
+  });
+});
 
 document.addEventListener('keydown', (e) => {
   // Restart game on Space or Enter when game is over
@@ -214,5 +277,47 @@ function handleSwipe() {
 }
 
 restartBtn.addEventListener('click', initGame);
+
+// D-Pad controls for mobile
+const dpadUp = document.getElementById('dpadUp');
+const dpadDown = document.getElementById('dpadDown');
+const dpadLeft = document.getElementById('dpadLeft');
+const dpadRight = document.getElementById('dpadRight');
+
+if (dpadUp) {
+  dpadUp.addEventListener('click', (e) => {
+    e.preventDefault();
+    if (isGameRunning && direction !== DIRECTION.DOWN) {
+      nextDirection = DIRECTION.UP;
+    }
+  });
+}
+
+if (dpadDown) {
+  dpadDown.addEventListener('click', (e) => {
+    e.preventDefault();
+    if (isGameRunning && direction !== DIRECTION.UP) {
+      nextDirection = DIRECTION.DOWN;
+    }
+  });
+}
+
+if (dpadLeft) {
+  dpadLeft.addEventListener('click', (e) => {
+    e.preventDefault();
+    if (isGameRunning && direction !== DIRECTION.RIGHT) {
+      nextDirection = DIRECTION.LEFT;
+    }
+  });
+}
+
+if (dpadRight) {
+  dpadRight.addEventListener('click', (e) => {
+    e.preventDefault();
+    if (isGameRunning && direction !== DIRECTION.LEFT) {
+      nextDirection = DIRECTION.RIGHT;
+    }
+  });
+}
 
 initGame();

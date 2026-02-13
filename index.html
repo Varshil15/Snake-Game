@@ -25,19 +25,53 @@
       </div>
     </div>
 
-    <div class="game-board-wrapper">
-      <div id="gameBoard"></div>
-      <div class="game-over-overlay" id="gameOverOverlay">
-        <div class="game-over-title">GAME OVER</div>
-        <div class="final-score">Final Score: <span id="finalScore">0</span></div>
-        <button class="btn" id="restartBtn">Play Again</button>
-      </div>
-    </div>
+    <div class="main-content">
+      <div class="game-section">
+        <div class="game-board-wrapper">
+          <div id="gameBoard"></div>
+          <div class="game-over-overlay" id="gameOverOverlay">
+            <div class="game-over-title">GAME OVER</div>
+            <div class="final-score">Final Score: <span id="finalScore">0</span></div>
+            <button class="btn" id="restartBtn">Play Again</button>
+          </div>
+        </div>
 
-    <div class="controls-hint">
-      <div><span>🖱️ Desktop:</span> Use Arrow Keys</div>
-      <div><span>📱 Mobile:</span> Swipe to Control</div>
-      <div><span>🔄 Restart:</span> Space or Enter</div>
+        <div class="controls-hint">
+          <div><span>🖱️ Desktop:</span> Use Arrow Keys</div>
+          <div><span>📱 Mobile:</span> Swipe to Control</div>
+          <div><span>🔄 Restart:</span> Space or Enter</div>
+        </div>
+
+        <div class="dpad-container" id="dpadContainer">
+          <button class="dpad-btn dpad-up" id="dpadUp" aria-label="Up">▲</button>
+          <button class="dpad-btn dpad-left" id="dpadLeft" aria-label="Left">◄</button>
+          <button class="dpad-btn dpad-center"></button>
+          <button class="dpad-btn dpad-right" id="dpadRight" aria-label="Right">►</button>
+          <button class="dpad-btn dpad-down" id="dpadDown" aria-label="Down">▼</button>
+        </div>
+      </div>
+
+      <aside class="side-panel">
+        <div class="panel-title">Difficulty</div>
+        <div class="difficulty-options">
+          <label class="difficulty-option">
+            <input type="radio" name="difficulty" value="easy">
+            <span>Easy</span>
+          </label>
+          <label class="difficulty-option">
+            <input type="radio" name="difficulty" value="medium" checked>
+            <span>Medium</span>
+          </label>
+          <label class="difficulty-option">
+            <input type="radio" name="difficulty" value="hard">
+            <span>Hard</span>
+          </label>
+        </div>
+        <div class="difficulty-info">
+          <div class="difficulty-label">Game speed</div>
+          <div class="difficulty-speed" id="speedDisplay">–</div>
+        </div>
+      </aside>
     </div>
   </div>
 
